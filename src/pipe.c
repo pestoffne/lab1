@@ -38,11 +38,15 @@ void script_pipe() {
             perror("Parent:  Can not close read fd of pipe.");
             exit(14);
         }
-        sleep(1);
+        int status;
+        if (-1 == wait(&status)) {
+            perror("Parent:  Failed to handle CHLD zombie.");
+            exit(20);
+        }
         write(pipefd[1], "foo", 12);
         printf("Parent:  Finished.\n");
     } else {  // (-1 == pid) error
-        perror("?:       Pid is negative, after fork.\n");
+        perror("?:       Pid is negative, after fork.");
         exit(10);
     }
 }
